@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Clear-A-Way Solutions</title>
+  <meta name="description" content="Contact Clear-A-Way Solutions for commercial cleaning, residential cleaning, and junk removal in Hampton Roads, VA. Call (757) 591-0000 or send a message." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://clearawaysolutions.com/contact" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <div class="logo-wordmark">
+          <span class="logo-main">Clear-A-<span>Way</span></span>
+          <span class="logo-sub">Solutions</span>
+        </div>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="services">Services</a></li>
+        <li><a href="about">About</a></li>
+        <li><a href="contact">Contact</a></li>
+        <li><a href="book" class="nav-cta">Book Now</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-inner">
+      <span class="section-label">Get In Touch</span>
+      <h1>Let's <span class="gradient-text">Talk</span></h1>
+      <p>Questions, quotes, or ready to book — reach out any way that works for you. We respond fast.</p>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <section class="contact-section section">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h2>Reach <span class="gradient-text">Us Directly</span></h2>
+          <p>Whether you need a quick answer or a full estimate, we're here. Call us, send a message, or use the booking form to lock in a time.</p>
+          <div class="contact-details">
+            <div class="contact-item">
+              <div class="contact-icon">📞</div>
+              <a href="tel:+17575910000">(757) 591-0000</a>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">✉️</div>
+              <a href="mailto:info@clearawaysolutions.com">info@clearawaysolutions.com</a>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">📍</div>
+              <span class="val">Serving Hampton Roads, VA &amp; Surrounding Areas</span>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">🕐</div>
+              <span class="val">Mon–Sat: 7AM – 7PM &nbsp;|&nbsp; Sun: By Appointment</span>
+            </div>
+          </div>
+          <div style="margin-top:40px; padding: 28px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+            <h3 style="font-size:1.1rem; color: var(--white); margin-bottom: 12px;">Need it done today?</h3>
+            <p style="color: var(--text-mid); font-size: 0.93rem; line-height: 1.7; margin-bottom: 16px;">Same-day service available for cleaning and junk removal. Call us directly for fastest scheduling.</p>
+            <a href="tel:+17575910000" class="btn-primary">Call Now: (757) 591-0000</a>
+          </div>
+        </div>
+
+        <form class="contact-form" action="https://formspree.io/f/contact" method="POST" data-ajax>
+          <input type="hidden" name="_subject" value="New Contact — Clear-A-Way Solutions" />
+          <input type="hidden" name="source" value="Contact page" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="c-name">Name</label>
+              <input type="text" id="c-name" name="name" placeholder="Your name" required />
+            </div>
+            <div class="form-group">
+              <label for="c-phone">Phone</label>
+              <input type="tel" id="c-phone" name="phone" placeholder="(757) 000-0000" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="c-email">Email</label>
+            <input type="email" id="c-email" name="email" placeholder="your@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="c-service">Service Needed</label>
+            <select id="c-service" name="service">
+              <option value="">— Select a service —</option>
+              <option>Commercial Cleaning</option>
+              <option>Residential Cleaning</option>
+              <option>Junk Removal</option>
+              <option>Cleaning + Junk Removal (Combined)</option>
+              <option>Not Sure / General Inquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="c-message">Message</label>
+            <textarea id="c-message" name="message" rows="5" placeholder="Tell us about your project, property, or question…" required></textarea>
+          </div>
+          <div class="sms-consent">
+            <label class="checkbox-label">
+              <input type="checkbox" name="sms_consent" value="yes" />
+              <span>I agree to receive SMS messages from Clear-A-Way Solutions regarding my inquiry. Message &amp; data rates may apply. Reply STOP to opt out. View our <a href="privacy">Privacy Policy</a>.</span>
+            </label>
+          </div>
+          <button type="submit" class="btn-primary full-width">Send Message</button>
+          <p class="form-success" style="display:none; color: var(--teal-light); text-align:center; font-weight:600; padding:12px;">Message sent! We'll be in touch within 24 hours.</p>
+          <p class="form-note">We typically respond within a few hours during business hours.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <div class="logo-wordmark">
+              <span class="logo-main">Clear-A-<span>Way</span></span>
+              <span class="logo-sub">Solutions | RMM3 LLC</span>
+            </div>
+          </a>
+          <p>Commercial cleaning, residential cleaning, and junk removal — handled by one professional team serving Hampton Roads, VA.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="about">About Us</a></li>
+            <li><a href="contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services#commercial">Commercial Cleaning</a></li>
+            <li><a href="services#residential">Residential Cleaning</a></li>
+            <li><a href="services#junk-removal">Junk Removal</a></li>
+            <li><a href="book">Book Now</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:+17575910000">(757) 591-0000</a></li>
+            <li><a href="mailto:info@clearawaysolutions.com">info@clearawaysolutions.com</a></li>
+            <li><a href="book">Free Estimate</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Clear-A-Way Solutions | RMM3 LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="terms">Terms of Service</a>
+          <span>·</span>
+          <a href="privacy">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
