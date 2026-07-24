@@ -334,7 +334,7 @@ body {
   color: var(--white);
   margin-bottom: 14px;
 }
-.service-card p { color: var(--text-mid); font-size: 0.95rem; line-height: 1.75; margin-bottom: 24px; }
+.service-card p { color: var(--text-mid); font-size: 0.95rem; line-height: 1.75; margin-bottom: 12px; }
 .service-tag {
   position: absolute;
   top: 20px; right: 20px;
@@ -367,6 +367,16 @@ body {
   color: var(--teal-light);
   font-size: 0.8rem;
 }
+.service-link {
+  display: inline-block;
+  color: var(--teal-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 8px;
+  transition: color 0.2s;
+}
+.service-link:hover { color: var(--white); }
 
 .services-cta {
   text-align: center;
