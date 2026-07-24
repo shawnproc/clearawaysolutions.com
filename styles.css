@@ -177,6 +177,7 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
   padding: 120px 24px 80px;
@@ -202,7 +203,18 @@ body {
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 680px;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hero-content .hero-eyebrow {
+  justify-content: center;
+}
+.hero-content .hero-actions {
+  justify-content: center;
+}
+.hero-content .hero-badges {
+  justify-content: center;
 }
 .hero-eyebrow {
   font-size: 0.78rem;
