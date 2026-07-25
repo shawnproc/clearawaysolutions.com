@@ -42,7 +42,7 @@ body {
 
 /* ===== GRADIENT TEXT ===== */
 .gradient-text {
-  background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
+  background: linear-gradient(135deg, var(--coral), var(--coral-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
