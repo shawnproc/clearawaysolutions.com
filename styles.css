@@ -171,9 +171,8 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 80% at 20% 50%, rgba(15, 74, 88, 0.35) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 50% at 85% 20%, rgba(74, 171, 184, 0.12) 0%, transparent 55%),
-    radial-gradient(ellipse 30% 40% at 70% 90%, rgba(26, 107, 124, 0.1) 0%, transparent 50%);
+    radial-gradient(ellipse 60% 70% at 20% 50%, rgba(255, 107, 74, 0.06) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 85% 20%, rgba(255, 107, 74, 0.03) 0%, transparent 55%);
   z-index: 0;
 }
 .hero-grid-overlay {
@@ -539,7 +538,7 @@ body {
 
 /* ===== CTA BAND ===== */
 .cta-band {
-  background: linear-gradient(135deg, var(--teal-dark) 0%, #0a2f3a 50%, #0A0A0A 100%);
+  background: #000000;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   text-align: center;
@@ -600,7 +599,7 @@ body {
 .page-hero-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(15,74,88,0.25) 0%, transparent 65%);
+  background: none;
 }
 .page-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; text-align: center; }
 .page-hero h1 { font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 20px; color: var(--white); }
