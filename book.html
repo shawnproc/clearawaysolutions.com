@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Now | Clear-A-Way Solutions</title>
-  <meta name="description" content="Book commercial cleaning or residential cleaning with Clear-A-Way Solutions. Free estimates. Serving Fredericksburg, VA." />
+  <meta name="description" content="Book commercial cleaning or residential cleaning with Clear-A-Way Solutions. Pick a time that works for you. Serving Fredericksburg, VA." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://clearawaysolutions.com/book" />
   <link rel="icon" type="image/png" sizes="64x64"  href="favicon/favicon-64.png" />
@@ -39,141 +39,20 @@
   <!-- Book Section -->
   <section class="book-section">
     <div class="container">
-      <div class="book-grid">
-        <!-- Left info -->
-        <div class="book-info">
-          <span class="section-label">Book a Service</span>
-          <h2>Get Your <span class="gradient-text">Free Estimate</span></h2>
-          <p>Fill out the form and we'll get back to you with an exact quote — usually within a few hours. No pressure, no commitment until you're ready.</p>
-
-          <div class="book-detail">
-            <span class="book-detail-icon">⚡</span>
-            <div>
-              <h4>Same-Day Available</h4>
-              <p>Need it done fast? Select "ASAP / Same-Day" and we'll do our best to get a team out today.</p>
-            </div>
-          </div>
-          <div class="book-detail">
-            <span class="book-detail-icon">💰</span>
-            <div>
-              <h4>Free Estimates</h4>
-              <p>No fee to get a quote. We'll give you a clear, upfront price before any work begins.</p>
-            </div>
-          </div>
-          <div class="book-detail">
-            <span class="book-detail-icon">📞</span>
-            <div>
-              <h4>Prefer to Call?</h4>
-              <p><a href="tel:+17575910000" style="color: var(--teal-light); font-weight:600;">(757) 591-0000</a> — Mon–Sat, 7AM–7PM</p>
-            </div>
-          </div>
-
-          <div class="trust-strip" style="margin-top:36px; padding-top:28px; justify-content:flex-start;">
-            <span>Fully Insured</span>
-            <span>Veteran-Owned</span>
-            <span>Satisfaction Guaranteed</span>
-          </div>
+      <div class="book-cal-header">
+        <span class="section-label">Book a Consultation</span>
+        <h2>Pick a Time That <span class="gradient-text">Works for You</span></h2>
+        <p>Choose a slot and we'll confirm your consultation — no forms, no back-and-forth. Same-day available.</p>
+        <div class="trust-strip" style="justify-content:center; margin-top:20px;">
+          <span>Fully Insured</span>
+          <span>Veteran-Owned</span>
+          <span>Free Estimates</span>
+          <span>Satisfaction Guaranteed</span>
         </div>
-
-        <!-- Booking Form -->
-        <form class="book-form" action="https://formspree.io/f/mykayqza" method="POST" data-ajax>
-          <input type="hidden" name="_subject" value="New Booking Request — Clear-A-Way Solutions" />
-          <input type="hidden" name="source" value="Book page" />
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="b-name">Full Name</label>
-              <input type="text" id="b-name" name="name" placeholder="Your name" required />
-            </div>
-            <div class="form-group">
-              <label for="b-phone">Phone</label>
-              <input type="tel" id="b-phone" name="phone" placeholder="(757) 000-0000" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="b-email">Email</label>
-            <input type="email" id="b-email" name="email" placeholder="your@email.com" required />
-          </div>
-
-          <div class="form-group">
-            <label for="b-service">Service(s) Needed</label>
-            <select id="b-service" name="service" required>
-              <option value="">— Select a service —</option>
-              <option>Commercial Cleaning (Office / Workspace)</option>
-              <option>Commercial Cleaning (Post-Construction)</option>
-              <option>Commercial Cleaning (Facility / Warehouse)</option>
-              <option>Residential Cleaning (Standard / Regular)</option>
-              <option>Residential Cleaning (Deep Clean)</option>
-              <option>Residential Cleaning (Move-In / Move-Out)</option>
-              <option>Not Sure — Need a Recommendation</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="b-address">Property Address</label>
-            <input type="text" id="b-address" name="address" placeholder="Street address, city, ZIP" required />
-          </div>
-
-          <div class="form-group">
-            <label for="b-type">Property Type</label>
-            <select id="b-type" name="property_type">
-              <option>Residential Home</option>
-              <option>Apartment / Condo</option>
-              <option>Office / Commercial Space</option>
-              <option>Warehouse / Industrial</option>
-              <option>Retail Space</option>
-              <option>Rental Property</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="b-date">Preferred Date</label>
-              <input type="date" id="b-date" name="preferred_date" required />
-            </div>
-            <div class="form-group">
-              <label for="b-time">Preferred Time</label>
-              <select id="b-time" name="preferred_time">
-                <option>ASAP / Same-Day</option>
-                <option>Morning (7AM–10AM)</option>
-                <option>Mid-Morning (10AM–12PM)</option>
-                <option>Afternoon (12PM–3PM)</option>
-                <option>Late Afternoon (3PM–6PM)</option>
-                <option>Flexible</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="b-frequency">Frequency</label>
-            <select id="b-frequency" name="frequency">
-              <option>One-Time Service</option>
-              <option>Weekly</option>
-              <option>Bi-Weekly (Every 2 Weeks)</option>
-              <option>Monthly</option>
-              <option>Custom / TBD</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="b-details">Job Details</label>
-            <textarea id="b-details" name="details" rows="4" placeholder="Describe the property, what needs to be cleaned or removed, approximate square footage, any access notes…" required></textarea>
-          </div>
-
-          <div class="sms-consent">
-            <label class="checkbox-label">
-              <input type="checkbox" name="sms_consent" value="yes" />
-              <span>I agree to receive SMS updates from Clear-A-Way Solutions about my booking. Message &amp; data rates may apply. Reply STOP to opt out. View our <a href="privacy">Privacy Policy</a>.</span>
-            </label>
-          </div>
-
-          <button type="submit" class="btn-primary full-width">Submit Booking Request</button>
-          <p class="form-success" style="display:none; color: var(--teal-light); text-align:center; font-weight:600; padding:12px; background: var(--teal-glow); border-radius: 8px; border: 1px solid var(--border);">Request received! We'll contact you within a few hours with your estimate.</p>
-          <p class="form-note">We'll confirm your appointment and send a quote before any work begins.</p>
-        </form>
       </div>
+
+      <!-- Cal.com Inline Embed -->
+      <div id="cal-embed"></div>
     </div>
   </section>
 
@@ -222,5 +101,34 @@
   </footer>
 
   <script src="main.js"></script>
+
+  <!-- Cal.com Embed -->
+  <script type="text/javascript">
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal; let ar = arguments;
+        if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; }
+        if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, [L, api]); } else p(cal, ar); return; }
+        p(cal, ar);
+      };
+    })(window, "https://app.cal.com/embed/embed.js", "init");
+
+    Cal("init", { origin: "https://cal.com" });
+
+    Cal("inline", {
+      elementOrSelector: "#cal-embed",
+      calLink: "keystone-operations-group-gxwd2o/book-a-consultation",
+      config: { layout: "month_view" }
+    });
+
+    Cal("ui", {
+      theme: "dark",
+      hideEventTypeDetails: false,
+      layout: "month_view"
+    });
+  </script>
+
 </body>
 </html>
