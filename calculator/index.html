@@ -320,6 +320,37 @@
     .qarr { color: rgba(255,107,74,.4); margin: 0 3px; font-size: 1.1rem; }
     .qblank { color: var(--t3); opacity: .35; font-weight: 300; }
 
+    /* ── Loyalty toggles ── */
+    .ctitle-note { font-size:.58rem; font-weight:400; text-transform:none; letter-spacing:0; color:var(--t3); margin-left:3px; }
+    .ltoggles { display:flex; flex-direction:column; gap:7px; }
+    .ltoggle {
+      display:flex; align-items:center; justify-content:space-between;
+      min-height:54px; padding:11px 13px;
+      background:var(--ib);
+      border:1.5px solid var(--bd);
+      border-radius:var(--rxs);
+      cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+      gap:12px;
+      transition:border-color 120ms, background 120ms;
+    }
+    .ltoggle:hover { border-color:var(--lt); }
+    .ltoggle.on { border-color:var(--co); background:rgba(255,107,74,.07); }
+    .lt-left { display:flex; align-items:center; gap:11px; flex:1; min-width:0; }
+    .lt-dot {
+      width:18px; height:18px; flex-shrink:0;
+      border-radius:50%;
+      border:2px solid var(--bd);
+      display:flex; align-items:center; justify-content:center;
+      font-size:.6rem; font-weight:700;
+      transition:all 120ms;
+    }
+    .ltoggle.on .lt-dot { background:var(--co); border-color:var(--co); }
+    .ltoggle.on .lt-dot::after { content:'✓'; color:#fff; }
+    .lt-lbl { font-size:.9rem; line-height:1.3; }
+    .lt-cr { font-size:.9rem; font-weight:700; color:var(--t3); flex-shrink:0; transition:color 120ms; }
+    .ltoggle.on .lt-cr { color:#5bdb90; }
+
     /* ── Footer ── */
     .ftr {
       text-align: center;
@@ -389,8 +420,8 @@
     <div class="pills2" id="sched-pills">
       <button class="pill sel" data-v="onetime">One-Time<span class="psub">No discount</span></button>
       <button class="pill" data-v="monthly">Monthly<span class="psub">−3%</span></button>
-      <button class="pill" data-v="biweekly">Bi-Weekly<span class="psub">−5%</span></button>
-      <button class="pill" data-v="weekly">Weekly<span class="psub">−10%</span></button>
+      <button class="pill" data-v="biweekly">Bi-Weekly<span class="psub">−8%</span></button>
+      <button class="pill" data-v="weekly">Weekly<span class="psub">−15%</span></button>
     </div>
   </div>
   <hr class="cr" />
@@ -402,6 +433,28 @@
       <button class="pill sel" data-v="fred">Fredericksburg<span class="psub">Standard</span></button>
       <button class="pill" data-v="staf">Stafford / Spotsy<span class="psub">+8%</span></button>
       <button class="pill" data-v="dc">DC Suburbs<span class="psub">+15%</span></button>
+    </div>
+  </div>
+  <hr class="cr" />
+
+  <!-- Loyalty Credits -->
+  <div class="card">
+    <div class="ctitle">Loyalty Credits <span class="ctitle-note">This invoice only &middot; max −$75</span></div>
+    <div class="ltoggles">
+      <div class="ltoggle" id="lt-review" onclick="flipLoyalty('review')">
+        <div class="lt-left">
+          <div class="lt-dot"></div>
+          <span class="lt-lbl">Client left 5-star review</span>
+        </div>
+        <span class="lt-cr">−$25</span>
+      </div>
+      <div class="ltoggle" id="lt-referral" onclick="flipLoyalty('referral')">
+        <div class="lt-left">
+          <div class="lt-dot"></div>
+          <span class="lt-lbl">Client sent a referral</span>
+        </div>
+        <span class="lt-cr">−$50</span>
+      </div>
     </div>
   </div>
   <hr class="cr" />
@@ -461,7 +514,7 @@ const ADDONS = [
 ];
 
 const SEV   = { standard:1.0, moderate:1.2, heavy:1.5 };
-const SCHED = { onetime:0, monthly:-.03, biweekly:-.05, weekly:-.10 };
+const SCHED = { onetime:0, monthly:-.03, biweekly:-.08, weekly:-.15 };
 const AREA  = {
   fred:{ m:1.00, l:'Fredericksburg (standard)' },
   staf:{ m:1.08, l:'Stafford / Spotsylvania' },
@@ -475,6 +528,7 @@ const S = {
   sched: 'onetime',
   area:  'fred',
   addons: new Set(),
+  loyalty: new Set(),
 };
 
 /* ─ Render jobs ──────────────────────────────────────────── */
@@ -515,6 +569,11 @@ function pickJob(k) { S.job = k; renderJobs(); calc(); }
 function flipAddon(k) {
   S.addons.has(k) ? S.addons.delete(k) : S.addons.add(k);
   renderChips();
+  calc();
+}
+function flipLoyalty(k) {
+  S.loyalty.has(k) ? S.loyalty.delete(k) : S.loyalty.add(k);
+  document.getElementById('lt-' + k).classList.toggle('on', S.loyalty.has(k));
   calc();
 }
 
@@ -565,17 +624,25 @@ function calc() {
   const ar  = AREA[S.area];
   const mid = afterDisc * ar.m;
 
+  /* Loyalty credits — flat dollar, applied after area premium, cap $75 */
+  let loyaltyCredit = 0;
+  if (S.loyalty.has('review'))   loyaltyCredit += 25;
+  if (S.loyalty.has('referral')) loyaltyCredit += 50;
+  loyaltyCredit = Math.min(loyaltyCredit, 75);
+  const finalMid = Math.max(0, mid - loyaltyCredit);
+
   /* Quote range */
-  const lo = mid * 0.92;
-  const hi = mid * 1.10;
+  const lo = finalMid * 0.92;
+  const hi = finalMid * 1.10;
 
   /* Margin */
-  const margin  = mid - cost;
-  const marginP = mid > 0 ? (margin / mid) * 100 : 0;
+  const margin  = finalMid - cost;
+  const marginP = finalMid > 0 ? (margin / finalMid) * 100 : 0;
 
-  updateBar(lo, hi, mid);
+  updateBar(lo, hi, finalMid);
   updateBreakdown({ sqft, hrs, sqftEst, hrEst, avg, base, addonRows, addonSum,
-    afterAddon, discRate, discAmt, afterDisc, ar, mid, lo, hi, cost, margin, marginP, j });
+    afterAddon, discRate, discAmt, afterDisc, ar, mid, loyaltyCredit, finalMid,
+    lo, hi, cost, margin, marginP, j });
 }
 
 /* ─ Quote bar ────────────────────────────────────────────── */
@@ -627,7 +694,7 @@ function updateBreakdown(d) {
   /* — Discount — */
   if (d.discRate !== 0) {
     rows.push('<div class="bdiv"></div>');
-    const discLbls = { monthly:'Monthly recurring (−3%)', biweekly:'Bi-weekly recurring (−5%)', weekly:'Weekly recurring (−10%)' };
+    const discLbls = { monthly:'Monthly recurring (−3%)', biweekly:'Bi-weekly recurring (−8%)', weekly:'Weekly recurring (−15%)' };
     rows.push(R(discLbls[S.sched], fmtD(d.discAmt), 'disc'));
   }
 
@@ -638,9 +705,17 @@ function updateBreakdown(d) {
     rows.push(R(`Area premium — ${d.ar.l} (×${d.ar.m.toFixed(2)})`, '+' + fmtD(premAmt)));
   }
 
+  /* — Loyalty credits — */
+  if (d.loyaltyCredit > 0) {
+    rows.push('<div class="bdiv"></div><div class="bsub">Loyalty Credits</div>');
+    if (S.loyalty.has('review'))   rows.push(R('5-star review credit', '−$25', 'disc'));
+    if (S.loyalty.has('referral')) rows.push(R('Referral credit', '−$50', 'disc'));
+  }
+
   /* — Quote range — */
   rows.push('<div class="bdiv"></div>');
-  rows.push(R('Quote Midpoint', fmtD(d.mid), 'ttl'));
+  const midLabel = d.loyaltyCredit > 0 ? 'Quote Midpoint (after credits)' : 'Quote Midpoint';
+  rows.push(R(midLabel, fmtD(d.finalMid), 'ttl'));
   rows.push(R('Low quote  (×0.92)', fmtD(d.lo)));
   rows.push(R('High quote (×1.10)', fmtD(d.hi)));
 
