@@ -584,8 +584,21 @@
           if (timer) clearTimeout(timer);
           show();
           if (!r.ok) {
+            // Backup path: sendBeacon posts as text/plain, which skips the
+            // CORS preflight entirely — the server parses the JSON body anyway.
+            var beaconed = false;
+            try {
+              if (navigator.sendBeacon) {
+                beaconed = navigator.sendBeacon(
+                  ENDPOINT,
+                  new Blob([JSON.stringify(payload)], { type: 'text/plain' })
+                );
+              }
+            } catch (e) { /* ignore */ }
             var s = document.getElementById('sendStatus');
-            s.textContent = 'Heads up — we couldn’t automatically log your request (' + r.detail + '). Please call or book directly so we don’t miss you.';
+            s.textContent = beaconed
+              ? 'Note: primary send failed (' + r.detail + ') — a backup copy of your request was sent. If you don’t hear from us within a day, please call.'
+              : 'Heads up — we couldn’t automatically log your request (' + r.detail + '). Please call or book directly so we don’t miss you.';
             s.style.display = 'block';
           }
         });
