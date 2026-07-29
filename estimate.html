@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Instant Estimate | Clear-A-Way Solutions</title>
+  <meta name="description" content="Get an instant cleaning estimate from Clear-A-Way Solutions. Commercial and residential cleaning in Fredericksburg, VA and Northern Virginia." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://clearawaysolutions.com/estimate" />
+  <link rel="icon" type="image/png" sizes="64x64"  href="favicon/favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="256x256" href="favicon/favicon-256.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon/favicon-512.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Estimator widget ─────────────────────────────────── */
+    .est-wrap { max-width: 720px; margin: 0 auto; }
+    .est-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      margin-bottom: 20px;
+    }
+    .est-step-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--teal-light); margin-bottom: 20px;
+    }
+    .est-field { margin-bottom: 22px; }
+    .est-field:last-child { margin-bottom: 0; }
+    .est-field > label {
+      display: block; font-size: 0.82rem; font-weight: 700;
+      color: var(--text-mid); letter-spacing: 0.04em;
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+    .est-field input[type="text"],
+    .est-field input[type="tel"],
+    .est-field input[type="email"],
+    .est-field input[type="number"],
+    .est-field select {
+      width: 100%;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border-solid);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+    .est-field select {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%234aabb8' stroke-width='2' stroke-linecap='round'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 42px;
+    }
+    .est-field select option, .est-field select optgroup { background: #1a1a1a; color: var(--text); }
+    .est-field input:focus, .est-field select:focus { border-color: var(--teal-light); }
+    .est-field input::placeholder { color: var(--text-light); }
+
+    .est-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .est-pill {
+      flex: 1 1 auto;
+      text-align: center;
+      background: var(--bg-card-2);
+      border: 1.5px solid var(--border-solid);
+      border-radius: 50px;
+      color: var(--text-mid);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 12px 18px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      user-select: none;
+    }
+    .est-pill.on {
+      background: var(--teal-glow);
+      border-color: var(--teal-light);
+      color: var(--white);
+    }
+
+    .est-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .est-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-card-2);
+      border: 1.5px solid var(--border-solid);
+      border-radius: var(--radius);
+      color: var(--text-mid);
+      font-size: 0.88rem; font-weight: 600;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      user-select: none;
+    }
+    .est-chip .tick {
+      width: 18px; height: 18px; flex-shrink: 0;
+      border: 1.5px solid var(--border-solid); border-radius: 5px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; color: transparent;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .est-chip.on { border-color: var(--coral); color: var(--white); background: rgba(255, 107, 74, 0.07); }
+    .est-chip.on .tick { background: var(--coral); border-color: var(--coral); color: var(--white); }
+
+    .est-error {
+      display: none;
+      color: var(--coral); font-size: 0.88rem; font-weight: 700;
+      margin-top: 14px; text-align: center;
+    }
+    .est-error.show { display: block; }
+
+    .est-back {
+      display: inline-block; background: none; border: none;
+      color: var(--teal-light); font-family: 'Nunito', sans-serif;
+      font-size: 0.88rem; font-weight: 700; cursor: pointer;
+      margin-bottom: 18px; padding: 0;
+    }
+    .est-back:hover { text-decoration: underline; }
+
+    /* Result */
+    .est-result { text-align: center; padding: 44px 28px; }
+    .est-result-label {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text-mid); margin-bottom: 14px;
+    }
+    .est-range {
+      font-size: clamp(2.2rem, 7vw, 3.4rem);
+      font-weight: 800; line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .est-range .dash { color: var(--teal-light); font-weight: 600; padding: 0 6px; }
+    .est-result-sub { color: var(--text-mid); font-size: 0.95rem; max-width: 440px; margin: 0 auto 30px; }
+    .est-result-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .est-sent-note { margin-top: 22px; font-size: 0.82rem; color: var(--text-light); }
+
+    /* Honeypot — hidden from humans, bots fill it */
+    .est-hp { position: absolute; left: -9999px; opacity: 0; height: 0; overflow: hidden; }
+
+    @media (max-width: 560px) {
+      .est-card { padding: 26px 18px; }
+      .est-chips { grid-template-columns: 1fr; }
+      .est-pills { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <img src="logo/logo-horizontal-reverse.svg" alt="Clear-A-Way Solutions" class="logo-img" />
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="services">Services</a></li>
+        <li><a href="about">About</a></li>
+        <li><a href="estimate">Estimate</a></li>
+        <li><a href="contact">Contact</a></li>
+        <li><a href="book" class="nav-cta">Book Now</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-inner">
+      <span class="section-label">Free Estimate</span>
+      <h1>Instant <span class="gradient-text">Price Range</span></h1>
+      <p>Tell us about the job and get a real price range in seconds — no waiting, no obligation.</p>
+    </div>
+  </div>
+
+  <section class="section" style="padding-top: 56px;">
+    <div class="container">
+      <div class="est-wrap">
+
+        <!-- STEP 1 — Job details -->
+        <div class="est-card" id="step1">
+          <div class="est-step-label">Step 1 of 2 — Job Details</div>
+
+          <div class="est-field">
+            <label for="est-job">Type of Cleaning</label>
+            <select id="est-job">
+              <option value="office">Office / General Commercial</option>
+              <option value="medical">Medical / Dental Office</option>
+              <option value="law">Law Firm / Professional Office</option>
+              <option value="resi">Residential — Standard</option>
+              <option value="post">Post-Construction</option>
+              <option value="move">Move-In / Move-Out</option>
+            </select>
+          </div>
+
+          <div class="est-field">
+            <label for="est-sqft">Approximate Square Footage</label>
+            <input type="number" id="est-sqft" placeholder="e.g. 2500" min="0" inputmode="numeric" />
+          </div>
+
+          <div class="est-field">
+            <label>Condition of the Space</label>
+            <div class="est-pills" id="est-cond">
+              <button type="button" class="est-pill on" data-v="routine">Routine clean</button>
+              <button type="button" class="est-pill" data-v="buildup">Some buildup / not cleaned recently</button>
+              <button type="button" class="est-pill" data-v="deep">Deep clean needed / heavy buildup</button>
+            </div>
+          </div>
+
+          <div class="est-field">
+            <label for="est-freq">How Often?</label>
+            <select id="est-freq">
+              <option value="onetime">One-time</option>
+              <option value="monthly">Monthly</option>
+              <option value="biweekly">Bi-weekly</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </div>
+
+          <div class="est-field">
+            <label for="est-area">Your Area</label>
+            <select id="est-area">
+              <optgroup label="Local Core">
+                <option value="fred">Fredericksburg City</option>
+                <option value="spotsy">Spotsylvania County</option>
+                <option value="stafford">Stafford County</option>
+              </optgroup>
+              <optgroup label="North Toward DC">
+                <option value="woodbridge">Woodbridge</option>
+                <option value="manassas">Manassas</option>
+                <option value="pw">Prince William County</option>
+                <option value="alexandria">Alexandria</option>
+                <option value="arlington">Arlington</option>
+                <option value="fairfax">Fairfax County</option>
+              </optgroup>
+              <optgroup label="South Toward Richmond">
+                <option value="rutherglen">Ruther Glen</option>
+                <option value="bowlinggreen">Bowling Green</option>
+                <option value="caroline">Caroline County</option>
+                <option value="ashland">Ashland Corridor</option>
+              </optgroup>
+              <optgroup label="West">
+                <option value="culpeper">Culpeper County</option>
+              </optgroup>
+              <optgroup label="East">
+                <option value="kinggeorge">King George County</option>
+                <option value="tappahannock">Tappahannock Direction</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="est-field">
+            <label>Add-Ons <span style="text-transform:none; font-weight:600; color:var(--text-light);">(optional)</span></label>
+            <div class="est-chips" id="est-addons">
+              <div class="est-chip" data-v="bio"><span class="tick">✓</span>Biohazard / Clinical Disinfection</div>
+              <div class="est-chip" data-v="debris"><span class="tick">✓</span>Post-Construction Debris Removal</div>
+              <div class="est-chip" data-v="appliances"><span class="tick">✓</span>Inside Appliances (Oven, Fridge)</div>
+              <div class="est-chip" data-v="windows"><span class="tick">✓</span>Interior Windows</div>
+              <div class="est-chip" data-v="afterhours"><span class="tick">✓</span>After-Hours / Weekend Service</div>
+              <div class="est-chip" data-v="pet"><span class="tick">✓</span>Pet Hair Removal</div>
+              <div class="est-chip" data-v="lobby"><span class="tick">✓</span>Exterior Entry / Lobby Glass</div>
+              <div class="est-chip" data-v="liners"><span class="tick">✓</span>Trash Liner Restocking</div>
+            </div>
+          </div>
+
+          <button type="button" class="btn-primary full-width" style="margin-top:28px" onclick="goToStep2()">Get My Estimate &rarr;</button>
+          <p class="est-error" id="err1">Please enter your approximate square footage.</p>
+        </div>
+
+        <!-- STEP 2 — Contact gate -->
+        <div class="est-card" id="step2" style="display:none">
+          <button type="button" class="est-back" onclick="backToStep1()">&larr; Edit job details</button>
+          <div class="est-step-label">Step 2 of 2 — Where Should We Send It?</div>
+
+          <div class="est-field">
+            <label for="est-name">Full Name</label>
+            <input type="text" id="est-name" placeholder="Your name" autocomplete="name" />
+          </div>
+          <div class="est-field">
+            <label for="est-phone">Phone</label>
+            <input type="tel" id="est-phone" placeholder="(757) 000-0000" autocomplete="tel" inputmode="tel" />
+          </div>
+          <div class="est-field">
+            <label for="est-email">Email</label>
+            <input type="email" id="est-email" placeholder="your@email.com" autocomplete="email" inputmode="email" />
+          </div>
+
+          <!-- Honeypot -->
+          <div class="est-hp" aria-hidden="true">
+            <label for="est-website">Website</label>
+            <input type="text" id="est-website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <button type="button" class="btn-primary full-width" id="revealBtn" style="margin-top:10px" onclick="revealEstimate()">Show My Estimate</button>
+          <p class="est-error" id="err2">Please fill in your name, phone, and a valid email.</p>
+          <p class="form-note" style="margin-top:16px">Your estimate appears instantly. We may follow up to confirm details — no spam, ever.</p>
+        </div>
+
+        <!-- RESULT -->
+        <div class="est-card est-result" id="result" style="display:none">
+          <div class="est-result-label">Your Estimated Price Range</div>
+          <div class="est-range" id="est-range">$0 <span class="dash">–</span> $0</div>
+          <p class="est-result-sub" id="est-summary"></p>
+          <div class="est-result-actions">
+            <a href="book" class="btn-primary">Book This Service</a>
+            <a href="tel:+17575910000" class="btn-ghost">Call (757) 591-0000</a>
+          </div>
+          <p class="est-sent-note">Final pricing is confirmed after a quick walkthrough or call. This range covers typical jobs like yours.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <img src="logo/logo-horizontal-reverse.svg" alt="Clear-A-Way Solutions" class="logo-img logo-footer" />
+          </a>
+          <p>Commercial cleaning and residential cleaning — handled by one professional team serving Fredericksburg, VA.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="about">About Us</a></li>
+            <li><a href="contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services#commercial">Commercial Cleaning</a></li>
+            <li><a href="services#residential">Residential Cleaning</a></li>
+            <li><a href="book">Book Now</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:+17575910000">(757) 591-0000</a></li>
+            <li><a href="mailto:info@clearawaysolutions.com">info@clearawaysolutions.com</a></li>
+            <li><a href="estimate">Free Estimate</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Clear-A-Way Solutions | RMM3 LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="terms">Terms of Service</a>
+          <span>·</span>
+          <a href="privacy">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    var ENDPOINT = 'https://crm.keystoneoperationsgroup.net/api/jobs/create-from-quote';
+
+    var JOBS = {
+      office:  { label: 'Office / General Commercial',   sqft: 0.10, hr: 65, prod: 1000 },
+      medical: { label: 'Medical / Dental Office',       sqft: 0.10, hr: 65, prod: 850  },
+      law:     { label: 'Law Firm / Professional',       sqft: 0.08, hr: 58, prod: 1000 },
+      resi:    { label: 'Residential — Standard',        sqft: 0.09, hr: 50, prod: 700  },
+      post:    { label: 'Post-Construction',             sqft: 0.12, hr: 70, prod: 500  },
+      move:    { label: 'Move-In / Move-Out',            sqft: 0.11, hr: 62, prod: 600  }
+    };
+
+    var COND = {
+      routine: { label: 'Routine clean',                          m: 1.0  },
+      buildup: { label: 'Some buildup / not cleaned recently',    m: 1.2  },
+      deep:    { label: 'Deep clean needed / heavy buildup',      m: 1.5  }
+    };
+
+    var FREQ = {
+      onetime:  { label: 'One-time',  d: 0     },
+      monthly:  { label: 'Monthly',   d: -0.03 },
+      biweekly: { label: 'Bi-weekly', d: -0.08 },
+      weekly:   { label: 'Weekly',    d: -0.15 }
+    };
+
+    var AREAS = {
+      fred:         { label: 'Fredericksburg City',    m: 1.00 },
+      spotsy:       { label: 'Spotsylvania County',    m: 1.00 },
+      stafford:     { label: 'Stafford County',        m: 1.00 },
+      woodbridge:   { label: 'Woodbridge',             m: 1.08 },
+      manassas:     { label: 'Manassas',               m: 1.08 },
+      pw:           { label: 'Prince William County',  m: 1.08 },
+      alexandria:   { label: 'Alexandria',             m: 1.15 },
+      arlington:    { label: 'Arlington',              m: 1.15 },
+      fairfax:      { label: 'Fairfax County',         m: 1.15 },
+      rutherglen:   { label: 'Ruther Glen',            m: 1.05 },
+      bowlinggreen: { label: 'Bowling Green',          m: 1.05 },
+      caroline:     { label: 'Caroline County',        m: 1.05 },
+      ashland:      { label: 'Ashland Corridor',       m: 1.05 },
+      culpeper:     { label: 'Culpeper County',        m: 1.05 },
+      kinggeorge:   { label: 'King George County',     m: 1.05 },
+      tappahannock: { label: 'Tappahannock Direction', m: 1.05 }
+    };
+
+    var ADDONS = {
+      bio:        { label: 'Biohazard / Clinical Disinfection',  pct: 0.25, flat: 0  },
+      debris:     { label: 'Post-Construction Debris Removal',   pct: 0.20, flat: 0  },
+      appliances: { label: 'Inside Appliances (Oven, Fridge)',   pct: 0,    flat: 75 },
+      windows:    { label: 'Interior Windows',                   pct: 0.08, flat: 0  },
+      afterhours: { label: 'After-Hours / Weekend Service',      pct: 0.15, flat: 0  },
+      pet:        { label: 'Pet Hair Removal',                   pct: 0,    flat: 60 },
+      lobby:      { label: 'Exterior Entry / Lobby Glass',       pct: 0,    flat: 45 },
+      liners:     { label: 'Trash Liner Restocking',             pct: 0,    flat: 20 }
+    };
+
+    var state = { cond: 'routine', addons: [] };
+
+    // Condition pills
+    document.querySelectorAll('#est-cond .est-pill').forEach(function (p) {
+      p.addEventListener('click', function () {
+        document.querySelectorAll('#est-cond .est-pill').forEach(function (x) { x.classList.remove('on'); });
+        p.classList.add('on');
+        state.cond = p.dataset.v;
+      });
+    });
+
+    // Add-on chips
+    document.querySelectorAll('#est-addons .est-chip').forEach(function (c) {
+      c.addEventListener('click', function () {
+        var v = c.dataset.v;
+        var i = state.addons.indexOf(v);
+        if (i === -1) { state.addons.push(v); c.classList.add('on'); }
+        else { state.addons.splice(i, 1); c.classList.remove('on'); }
+      });
+    });
+
+    function compute() {
+      var jobKey  = document.getElementById('est-job').value;
+      var sqft    = parseFloat(document.getElementById('est-sqft').value) || 0;
+      var freqKey = document.getElementById('est-freq').value;
+      var areaKey = document.getElementById('est-area').value;
+
+      var job  = JOBS[jobKey];
+      var cond = COND[state.cond];
+      var freq = FREQ[freqKey];
+      var area = AREAS[areaKey];
+
+      var hours   = sqft / job.prod;
+      var sqftEst = sqft * job.sqft;
+      var hrEst   = hours * job.hr;
+      var base    = ((sqftEst + hrEst) / 2) * cond.m * area.m;
+
+      var addonSum = 0;
+      var addonLabels = [];
+      state.addons.forEach(function (k) {
+        var a = ADDONS[k];
+        addonSum += base * a.pct + a.flat;
+        addonLabels.push(a.label);
+      });
+
+      var subtotal = base + addonSum;
+      var mid  = subtotal * (1 + freq.d);
+      var low  = Math.round((mid * 0.92) / 5) * 5;
+      var high = Math.round((mid * 1.10) / 5) * 5;
+
+      return {
+        job_type: job.label,
+        sqft: sqft,
+        hours: Math.round(hours * 10) / 10,
+        severity: cond.m,
+        condition: cond.label,
+        area: area.label,
+        area_multiplier: area.m,
+        frequency: freq.label,
+        frequency_discount: freq.d || null,
+        addons: addonLabels,
+        quote_low: low,
+        quote_mid: Math.round(mid),
+        quote_high: high
+      };
+    }
+
+    window.goToStep2 = function () {
+      var sqft = parseFloat(document.getElementById('est-sqft').value) || 0;
+      var err = document.getElementById('err1');
+      if (sqft <= 0) { err.classList.add('show'); return; }
+      err.classList.remove('show');
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.backToStep1 = function () {
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step1').style.display = 'block';
+    };
+
+    window.revealEstimate = function () {
+      var name  = (document.getElementById('est-name').value || '').trim();
+      var phone = (document.getElementById('est-phone').value || '').trim();
+      var email = (document.getElementById('est-email').value || '').trim();
+      var err   = document.getElementById('err2');
+
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      var phoneOk = phone.replace(/\D/g, '').length >= 7;
+      if (!name || !phoneOk || !emailOk) { err.classList.add('show'); return; }
+      err.classList.remove('show');
+
+      var btn = document.getElementById('revealBtn');
+      btn.disabled = true;
+      btn.textContent = 'One moment…';
+
+      var q = compute();
+
+      var payload = {
+        source: 'website_estimator',
+        client_name: name,
+        phone: phone,
+        email: email,
+        job_type: q.job_type,
+        sqft: q.sqft,
+        hours: q.hours,
+        severity: q.severity,
+        condition: q.condition,
+        area: q.area,
+        area_multiplier: q.area_multiplier,
+        frequency: q.frequency,
+        frequency_discount: q.frequency_discount,
+        addons: q.addons,
+        quote_low: q.quote_low,
+        quote_mid: q.quote_mid,
+        quote_high: q.quote_high,
+        created_at: new Date().toISOString(),
+        website: (document.getElementById('est-website').value || '')
+      };
+
+      function show() {
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('est-range').innerHTML =
+          '$' + q.quote_low.toLocaleString() + ' <span class="dash">–</span> $' + q.quote_high.toLocaleString();
+
+        var bits = [q.job_type, q.sqft.toLocaleString() + ' sqft', q.condition, q.frequency, q.area];
+        if (q.addons.length) bits.push(q.addons.length + ' add-on' + (q.addons.length > 1 ? 's' : ''));
+        document.getElementById('est-summary').textContent = bits.join(' · ');
+
+        document.getElementById('result').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Send the lead; the estimate shows either way.
+      var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var timer = controller ? setTimeout(function () { controller.abort(); }, 10000) : null;
+
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller ? controller.signal : undefined
+      })
+        .catch(function () { /* estimate still shows; team follows up from other channels */ })
+        .then(function () {
+          if (timer) clearTimeout(timer);
+          show();
+        });
+    };
+  })();
+  </script>
+</body>
+</html>
