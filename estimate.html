@@ -313,8 +313,7 @@
             <a href="book" class="btn-primary">Book This Service</a>
             <a href="tel:+17575910000" class="btn-ghost">Call (757) 591-0000</a>
           </div>
-          <p class="est-sent-note">Final pricing is confirmed after a quick walkthrough or call. This range covers typical jobs like yours.</p>
-          <p class="est-sent-note" id="sendStatus" style="display:none; color: var(--coral); font-weight: 700;"></p>
+          <p class="est-sent-note">Final pricing is confirmed after a quick walkthrough or call. If you're ready, head over to <a href="book" style="color: var(--teal-light); font-weight:700;">Book Now</a> and choose a time.</p>
         </div>
 
       </div>
@@ -586,22 +585,17 @@
           if (timer) clearTimeout(timer);
           show();
           if (!r.ok) {
-            // Backup path: sendBeacon posts as text/plain, which skips the
-            // CORS preflight entirely — the server parses the JSON body anyway.
-            var beaconed = false;
+            // Silent backup: sendBeacon posts as text/plain (no CORS
+            // preflight), so the lead still reaches the CRM. The visitor
+            // just sees their estimate — no error language.
             try {
               if (navigator.sendBeacon) {
-                beaconed = navigator.sendBeacon(
+                navigator.sendBeacon(
                   ENDPOINT,
                   new Blob([JSON.stringify(payload)], { type: 'text/plain' })
                 );
               }
             } catch (e) { /* ignore */ }
-            var s = document.getElementById('sendStatus');
-            s.textContent = beaconed
-              ? 'Note: primary send failed (' + r.detail + ') — a backup copy of your request was sent. If you don’t hear from us within a day, please call.'
-              : 'Heads up — we couldn’t automatically log your request (' + r.detail + '). Please call or book directly so we don’t miss you.';
-            s.style.display = 'block';
           }
         });
     };
