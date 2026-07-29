@@ -314,6 +314,7 @@
             <a href="tel:+17575910000" class="btn-ghost">Call (757) 591-0000</a>
           </div>
           <p class="est-sent-note">Final pricing is confirmed after a quick walkthrough or call. This range covers typical jobs like yours.</p>
+          <p class="est-sent-note" id="sendStatus" style="display:none; color: var(--coral); font-weight: 700;"></p>
         </div>
 
       </div>
@@ -569,10 +570,24 @@
         body: JSON.stringify(payload),
         signal: controller ? controller.signal : undefined
       })
-        .catch(function () { /* estimate still shows; team follows up from other channels */ })
-        .then(function () {
+        .then(function (res) {
+          return res.json().then(function (d) {
+            return { ok: res.ok && d.success, detail: d.error || ('HTTP ' + res.status) };
+          }).catch(function () {
+            return { ok: false, detail: 'HTTP ' + res.status };
+          });
+        })
+        .catch(function (e) {
+          return { ok: false, detail: e && e.name === 'AbortError' ? 'timeout' : 'network error' };
+        })
+        .then(function (r) {
           if (timer) clearTimeout(timer);
           show();
+          if (!r.ok) {
+            var s = document.getElementById('sendStatus');
+            s.textContent = 'Heads up — we couldn’t automatically log your request (' + r.detail + '). Please call or book directly so we don’t miss you.';
+            s.style.display = 'block';
+          }
         });
     };
   })();
