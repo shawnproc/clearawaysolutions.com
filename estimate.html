@@ -494,6 +494,7 @@
       }
 
       var low  = Math.round((mid * 0.92) / 5) * 5;
+      if (isOneTime && mid > 0 && low < MIN_ONETIME) low = MIN_ONETIME;
       var high = Math.round((mid * 1.10) / 5) * 5;
 
       return {
