@@ -485,16 +485,12 @@
       var subtotal = base + addonSum;
       var mid  = subtotal * (1 + freq.d);
 
-      // One-time service fee + emergency surcharge — waived for clients
-      // on a recurring schedule
-      var TRIP_CHARGE = 50;
+      // Emergency surcharge — under 2 hr notice; never on recurring
       var EMERGENCY_FEE = 150;
-      var tripCharge = 0;
       var emergencyFee = 0;
-      if (isOneTime && mid > 0) {
-        tripCharge = TRIP_CHARGE;
-        emergencyFee = freqKey === 'emergency' ? EMERGENCY_FEE : 0;
-        mid += tripCharge + emergencyFee;
+      if (freqKey === 'emergency' && mid > 0) {
+        emergencyFee = EMERGENCY_FEE;
+        mid += emergencyFee;
       }
 
       var low  = Math.round((mid * 0.92) / 5) * 5;
@@ -515,7 +511,6 @@
         quote_mid: Math.round(mid),
         quote_high: high,
         minimum_applied: minApplied,
-        trip_charge: tripCharge || null,
         emergency_fee: emergencyFee || null
       };
     }
@@ -571,7 +566,6 @@
         quote_mid: q.quote_mid,
         quote_high: q.quote_high,
         minimum_applied: q.minimum_applied,
-        trip_charge: q.trip_charge,
         emergency_fee: q.emergency_fee,
         created_at: new Date().toISOString(),
         website: (document.getElementById('est-website').value || '')
