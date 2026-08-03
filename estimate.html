@@ -226,6 +226,7 @@
               <option value="monthly">Monthly</option>
               <option value="biweekly">Bi-weekly</option>
               <option value="weekly">Weekly</option>
+              <option value="emergency">Emergency — need it within 2 hours</option>
             </select>
           </div>
 
@@ -393,10 +394,11 @@
     };
 
     var FREQ = {
-      onetime:  { label: 'One-time',  d: 0     },
-      monthly:  { label: 'Monthly',   d: -0.03 },
-      biweekly: { label: 'Bi-weekly', d: -0.08 },
-      weekly:   { label: 'Weekly',    d: -0.15 }
+      onetime:   { label: 'One-time',                        d: 0     },
+      monthly:   { label: 'Monthly',                         d: -0.03 },
+      biweekly:  { label: 'Bi-weekly',                       d: -0.08 },
+      weekly:    { label: 'Weekly',                          d: -0.15 },
+      emergency: { label: 'Emergency (under 2 hr notice)',   d: 0     }
     };
 
     var AREAS = {
@@ -477,14 +479,18 @@
       var subtotal = base + addonSum;
       var mid  = subtotal * (1 + freq.d);
 
-      // One-time trip charge + minimum service charge floor — both waived
-      // for clients on a recurring schedule
-      var TRIP_CHARGE = 35;
+      // One-time service fee + emergency surcharge + minimum floor — all
+      // waived for clients on a recurring schedule
+      var TRIP_CHARGE = 50;
+      var EMERGENCY_FEE = 150;
+      var isOneTime = freqKey === 'onetime' || freqKey === 'emergency';
       var tripCharge = 0;
+      var emergencyFee = 0;
       var minApplied = false;
-      if (freqKey === 'onetime' && mid > 0) {
+      if (isOneTime && mid > 0) {
         tripCharge = TRIP_CHARGE;
-        mid += tripCharge;
+        emergencyFee = freqKey === 'emergency' ? EMERGENCY_FEE : 0;
+        mid += tripCharge + emergencyFee;
         if (mid < job.min) { mid = job.min; minApplied = true; }
       }
 
@@ -506,7 +512,8 @@
         quote_mid: Math.round(mid),
         quote_high: high,
         minimum_applied: minApplied,
-        trip_charge: tripCharge || null
+        trip_charge: tripCharge || null,
+        emergency_fee: emergencyFee || null
       };
     }
 
@@ -562,6 +569,7 @@
         quote_high: q.quote_high,
         minimum_applied: q.minimum_applied,
         trip_charge: q.trip_charge,
+        emergency_fee: q.emergency_fee,
         created_at: new Date().toISOString(),
         website: (document.getElementById('est-website').value || '')
       };
