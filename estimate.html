@@ -378,12 +378,12 @@
     var ENDPOINT = 'https://crm.keystoneoperationsgroup.net/api/jobs/create-from-quote';
 
     var JOBS = {
-      office:  { label: 'Office / General Commercial',   sqft: 0.10, hr: 65, prod: 1000 },
-      medical: { label: 'Medical / Dental Office',       sqft: 0.10, hr: 65, prod: 850  },
-      law:     { label: 'Law Firm / Professional',       sqft: 0.08, hr: 58, prod: 1000 },
-      resi:    { label: 'Residential — Standard',        sqft: 0.09, hr: 50, prod: 700  },
-      post:    { label: 'Post-Construction',             sqft: 0.12, hr: 70, prod: 500  },
-      move:    { label: 'Move-In / Move-Out',            sqft: 0.11, hr: 62, prod: 600  }
+      office:  { label: 'Office / General Commercial',   sqft: 0.10, hr: 65, prod: 1000, min: 150 },
+      medical: { label: 'Medical / Dental Office',       sqft: 0.10, hr: 65, prod: 850,  min: 175 },
+      law:     { label: 'Law Firm / Professional',       sqft: 0.08, hr: 58, prod: 1000, min: 150 },
+      resi:    { label: 'Residential — Standard',        sqft: 0.09, hr: 50, prod: 700,  min: 120 },
+      post:    { label: 'Post-Construction',             sqft: 0.12, hr: 70, prod: 500,  min: 200 },
+      move:    { label: 'Move-In / Move-Out',            sqft: 0.11, hr: 62, prod: 600,  min: 175 }
     };
 
     var COND = {
@@ -476,6 +476,12 @@
 
       var subtotal = base + addonSum;
       var mid  = subtotal * (1 + freq.d);
+
+      // Minimum service charge — floors the final price so small jobs
+      // still cover travel, setup, and overhead
+      var minApplied = false;
+      if (mid > 0 && mid < job.min) { mid = job.min; minApplied = true; }
+
       var low  = Math.round((mid * 0.92) / 5) * 5;
       var high = Math.round((mid * 1.10) / 5) * 5;
 
@@ -492,7 +498,8 @@
         addons: addonLabels,
         quote_low: low,
         quote_mid: Math.round(mid),
-        quote_high: high
+        quote_high: high,
+        minimum_applied: minApplied
       };
     }
 
@@ -546,6 +553,7 @@
         quote_low: q.quote_low,
         quote_mid: q.quote_mid,
         quote_high: q.quote_high,
+        minimum_applied: q.minimum_applied,
         created_at: new Date().toISOString(),
         website: (document.getElementById('est-website').value || '')
       };
@@ -557,6 +565,7 @@
 
         var bits = [q.job_type, q.sqft.toLocaleString() + ' sqft', q.condition, q.frequency, q.area];
         if (q.addons.length) bits.push(q.addons.length + ' add-on' + (q.addons.length > 1 ? 's' : ''));
+        if (q.minimum_applied) bits.push('includes minimum service charge');
         document.getElementById('est-summary').textContent = bits.join(' · ');
 
         document.getElementById('result').style.display = 'block';
