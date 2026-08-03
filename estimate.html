@@ -477,10 +477,10 @@
       var subtotal = base + addonSum;
       var mid  = subtotal * (1 + freq.d);
 
-      // Minimum service charge — floors the final price so small jobs
-      // still cover travel, setup, and overhead
+      // Minimum service charge — one-time cleans only; waived for clients
+      // on a recurring schedule
       var minApplied = false;
-      if (mid > 0 && mid < job.min) { mid = job.min; minApplied = true; }
+      if (freqKey === 'onetime' && mid > 0 && mid < job.min) { mid = job.min; minApplied = true; }
 
       var low  = Math.round((mid * 0.92) / 5) * 5;
       var high = Math.round((mid * 1.10) / 5) * 5;
