@@ -477,10 +477,16 @@
       var subtotal = base + addonSum;
       var mid  = subtotal * (1 + freq.d);
 
-      // Minimum service charge — one-time cleans only; waived for clients
-      // on a recurring schedule
+      // One-time trip charge + minimum service charge floor — both waived
+      // for clients on a recurring schedule
+      var TRIP_CHARGE = 35;
+      var tripCharge = 0;
       var minApplied = false;
-      if (freqKey === 'onetime' && mid > 0 && mid < job.min) { mid = job.min; minApplied = true; }
+      if (freqKey === 'onetime' && mid > 0) {
+        tripCharge = TRIP_CHARGE;
+        mid += tripCharge;
+        if (mid < job.min) { mid = job.min; minApplied = true; }
+      }
 
       var low  = Math.round((mid * 0.92) / 5) * 5;
       var high = Math.round((mid * 1.10) / 5) * 5;
@@ -499,7 +505,8 @@
         quote_low: low,
         quote_mid: Math.round(mid),
         quote_high: high,
-        minimum_applied: minApplied
+        minimum_applied: minApplied,
+        trip_charge: tripCharge || null
       };
     }
 
@@ -554,6 +561,7 @@
         quote_mid: q.quote_mid,
         quote_high: q.quote_high,
         minimum_applied: q.minimum_applied,
+        trip_charge: q.trip_charge,
         created_at: new Date().toISOString(),
         website: (document.getElementById('est-website').value || '')
       };
