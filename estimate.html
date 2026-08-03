@@ -468,6 +468,12 @@
       var hrEst   = hours * job.hr;
       var base    = ((sqftEst + hrEst) / 2) * cond.m * area.m;
 
+      // One-time cleans START at the minimum — add-ons and fees stack on top
+      var MIN_ONETIME = 150;
+      var isOneTime = freqKey === 'onetime' || freqKey === 'emergency';
+      var minApplied = false;
+      if (isOneTime && base > 0 && base < MIN_ONETIME) { base = MIN_ONETIME; minApplied = true; }
+
       var addonSum = 0;
       var addonLabels = [];
       state.addons.forEach(function (k) {
@@ -479,19 +485,16 @@
       var subtotal = base + addonSum;
       var mid  = subtotal * (1 + freq.d);
 
-      // One-time service fee + emergency surcharge + minimum floor — all
-      // waived for clients on a recurring schedule
+      // One-time service fee + emergency surcharge — waived for clients
+      // on a recurring schedule
       var TRIP_CHARGE = 50;
       var EMERGENCY_FEE = 150;
-      var isOneTime = freqKey === 'onetime' || freqKey === 'emergency';
       var tripCharge = 0;
       var emergencyFee = 0;
-      var minApplied = false;
       if (isOneTime && mid > 0) {
         tripCharge = TRIP_CHARGE;
         emergencyFee = freqKey === 'emergency' ? EMERGENCY_FEE : 0;
         mid += tripCharge + emergencyFee;
-        if (mid < job.min) { mid = job.min; minApplied = true; }
       }
 
       var low  = Math.round((mid * 0.92) / 5) * 5;
