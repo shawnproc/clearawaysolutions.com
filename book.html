@@ -129,15 +129,6 @@
       hideEventTypeDetails: false,
       layout: "month_view"
     });
-
-    // After a successful booking, send the visitor to the thank-you page
-    // (separate URL so Google can count it as a conversion)
-    Cal("on", {
-      action: "bookingSuccessful",
-      callback: function () {
-        window.location.href = "/thank-you";
-      }
-    });
   </script>
 
 </body>

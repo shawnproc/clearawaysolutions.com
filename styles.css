@@ -612,54 +612,6 @@ body {
 .book-cal-header > p { color: var(--text-mid); line-height: 1.8; }
 #cal-embed { min-height: 700px; width: 100%; border-radius: var(--radius-lg); overflow: hidden; }
 
-/* ===== THANK YOU PAGE ===== */
-.thanks-section { background: var(--bg); padding: 140px 0 96px; min-height: 70vh; }
-.thanks-card {
-  max-width: 680px;
-  margin: 0 auto;
-  text-align: center;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 56px 40px 48px;
-  box-shadow: var(--shadow-teal);
-}
-.thanks-check {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 24px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
-  color: var(--white);
-  font-size: 2.2rem;
-  font-weight: 800;
-  line-height: 72px;
-  box-shadow: 0 8px 32px var(--teal-glow);
-}
-.thanks-card h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--white); margin-bottom: 14px; }
-.thanks-lead { color: var(--text-mid); line-height: 1.8; max-width: 480px; margin: 0 auto 36px; }
-.thanks-steps { text-align: left; max-width: 480px; margin: 0 auto 36px; display: flex; flex-direction: column; gap: 20px; }
-.thanks-step { display: flex; gap: 16px; align-items: flex-start; }
-.thanks-step-num {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--teal-glow);
-  border: 1px solid var(--border);
-  color: var(--teal-light);
-  font-weight: 700;
-  font-size: 0.9rem;
-  line-height: 30px;
-  text-align: center;
-}
-.thanks-step h3 { color: var(--white); font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
-.thanks-step p { color: var(--text-mid); font-size: 0.92rem; line-height: 1.6; }
-.thanks-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-@media (max-width: 600px) {
-  .thanks-card { padding: 40px 22px 36px; }
-}
-
 /* ===== SERVICES PAGE ===== */
 .services-page-grid {
   display: flex;
