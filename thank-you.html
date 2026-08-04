@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book Now | Clear-A-Way Solutions</title>
-  <meta name="description" content="Book commercial cleaning or residential cleaning with Clear-A-Way Solutions. Pick a time that works for you. Serving Fredericksburg, VA." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://clearawaysolutions.com/book" />
+  <title>You're Booked! | Clear-A-Way Solutions</title>
+  <meta name="description" content="Your booking with Clear-A-Way Solutions is confirmed. We'll see you soon!" />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://clearawaysolutions.com/thank-you" />
   <link rel="icon" type="image/png" sizes="64x64"  href="favicon/favicon-64.png" />
   <link rel="icon" type="image/png" sizes="256x256" href="favicon/favicon-256.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="favicon/favicon-512.png" />
@@ -14,6 +14,13 @@
   <meta name="theme-color" content="#000000" />
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!--
+    GOOGLE TRACKING GOES HERE
+    Paste your Google tag (gtag.js) or Google Tag Manager snippet below.
+    In Google Ads / GA4, set the conversion to fire on page_view of /thank-you
+  -->
+
 </head>
 <body>
 
@@ -37,23 +44,47 @@
     </div>
   </nav>
 
-  <!-- Book Section -->
-  <section class="book-section">
+  <!-- Thank You Section -->
+  <section class="thanks-section">
     <div class="container">
-      <div class="book-cal-header">
-        <span class="section-label">Book a Consultation</span>
-        <h2>Pick a Time That <span class="gradient-text">Works for You</span></h2>
-        <p>Choose a slot and we'll confirm your consultation — no forms, no back-and-forth. Same-day available.</p>
-        <div class="trust-strip" style="justify-content:center; margin-top:20px;">
-          <span>Fully Insured</span>
-          <span>Veteran-Owned</span>
-          <span>Free Estimates</span>
-          <span>Satisfaction Guaranteed</span>
+      <div class="thanks-card">
+        <div class="thanks-check">✓</div>
+        <span class="section-label">Booking Confirmed</span>
+        <h1>You're <span class="gradient-text">Booked!</span></h1>
+        <p class="thanks-lead">
+          Thank you for choosing Clear-A-Way Solutions. A confirmation with your
+          date and time is on its way to your email.
+        </p>
+
+        <div class="thanks-steps">
+          <div class="thanks-step">
+            <span class="thanks-step-num">1</span>
+            <div>
+              <h3>Check your inbox</h3>
+              <p>Your confirmation email has the details and a link to reschedule if anything changes.</p>
+            </div>
+          </div>
+          <div class="thanks-step">
+            <span class="thanks-step-num">2</span>
+            <div>
+              <h3>We'll reach out</h3>
+              <p>Our team will confirm the specifics of your job before your appointment.</p>
+            </div>
+          </div>
+          <div class="thanks-step">
+            <span class="thanks-step-num">3</span>
+            <div>
+              <h3>We show up ready</h3>
+              <p>Fully insured, veteran-owned, and satisfaction guaranteed — every visit.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="thanks-actions">
+          <a href="/" class="btn-primary">Back to Home</a>
+          <a href="tel:+17575910000" class="btn-ghost">Questions? (757) 591-0000</a>
         </div>
       </div>
-
-      <!-- Cal.com Inline Embed -->
-      <div id="cal-embed"></div>
     </div>
   </section>
 
@@ -102,43 +133,6 @@
   </footer>
 
   <script src="main.js"></script>
-
-  <!-- Cal.com Embed -->
-  <script type="text/javascript">
-    (function (C, A, L) {
-      let p = function (a, ar) { a.q.push(ar); };
-      let d = C.document;
-      C.Cal = C.Cal || function () {
-        let cal = C.Cal; let ar = arguments;
-        if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; }
-        if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, [L, api]); } else p(cal, ar); return; }
-        p(cal, ar);
-      };
-    })(window, "https://app.cal.com/embed/embed.js", "init");
-
-    Cal("init", { origin: "https://cal.com" });
-
-    Cal("inline", {
-      elementOrSelector: "#cal-embed",
-      calLink: "clear-a-way/cleaning-booking",
-      config: { layout: "month_view" }
-    });
-
-    Cal("ui", {
-      theme: "dark",
-      hideEventTypeDetails: false,
-      layout: "month_view"
-    });
-
-    // After a successful booking, send the visitor to the thank-you page
-    // (separate URL so Google can count it as a conversion)
-    Cal("on", {
-      action: "bookingSuccessful",
-      callback: function () {
-        window.location.href = "/thank-you";
-      }
-    });
-  </script>
 
 </body>
 </html>
