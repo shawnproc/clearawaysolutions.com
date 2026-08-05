@@ -612,6 +612,35 @@ body {
 .book-cal-header > p { color: var(--text-mid); line-height: 1.8; }
 #cal-embed { min-height: 700px; width: 100%; border-radius: var(--radius-lg); overflow: hidden; }
 
+/* Book page hook */
+.hook-points {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.hook-point {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+.hook-point strong { color: var(--text); }
+.hook-point-icon { color: var(--teal-light); font-size: 1rem; }
+.book-quote {
+  max-width: 460px;
+  margin: 28px auto 0;
+  padding: 18px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.book-quote .testimonial-stars { color: var(--gold); font-size: 0.85rem; margin-bottom: 6px; }
+.book-quote p { color: var(--text); font-size: 0.95rem; line-height: 1.6; font-style: italic; margin-bottom: 6px; }
+.book-quote-author { color: var(--text-light); font-size: 0.82rem; }
+
 /* ===== THANK YOU PAGE ===== */
 .thanks-section { background: var(--bg); padding: 140px 0 96px; min-height: 70vh; }
 .thanks-card {
