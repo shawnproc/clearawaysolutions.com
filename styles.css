@@ -612,6 +612,40 @@ body {
 .book-cal-header > p { color: var(--text-mid); line-height: 1.8; }
 #cal-embed { min-height: 700px; width: 100%; border-radius: var(--radius-lg); overflow: hidden; }
 
+/* Hero CTA microcopy */
+.cta-microcopy { margin-top: 16px; font-size: 0.82rem; color: var(--text-light); }
+
+/* Testimonials CTA */
+.testimonials-cta { text-align: center; margin-top: 40px; }
+
+/* Sticky mobile book bar */
+.sticky-book-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 90;
+  display: none;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(10, 10, 10, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+}
+.sticky-book-btn {
+  display: block;
+  text-align: center;
+  background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+  color: var(--white);
+  padding: 14px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 4px 16px var(--coral-glow);
+}
+@media (max-width: 768px) {
+  .sticky-book-bar { display: block; }
+  body.has-book-bar { padding-bottom: 76px; }
+}
+
 /* Book page hook */
 .hook-points {
   display: flex;

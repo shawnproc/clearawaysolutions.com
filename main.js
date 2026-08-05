@@ -73,3 +73,14 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Sticky mobile "Book Now" bar — shown on every page except booking + thank-you
+(function () {
+  const path = location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
+  if (path.endsWith('/book') || path.endsWith('/thank-you')) return;
+  const bar = document.createElement('div');
+  bar.className = 'sticky-book-bar';
+  bar.innerHTML = '<a href="book" class="sticky-book-btn">Book Your Cleaning &mdash; Takes 60 Seconds</a>';
+  document.body.appendChild(bar);
+  document.body.classList.add('has-book-bar');
+})();
