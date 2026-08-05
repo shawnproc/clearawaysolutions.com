@@ -45,6 +45,9 @@
     }
     .est-field { margin-bottom: 22px; }
     .est-field:last-child { margin-bottom: 0; }
+    .est-promo-note { font-size: 0.82rem; margin-top: 6px; min-height: 1em; }
+    .est-promo-note.ok { color: var(--teal-light); font-weight: 700; }
+    .est-promo-note.bad { color: var(--coral); }
     .est-field > label {
       display: block; font-size: 0.82rem; font-weight: 700;
       color: var(--text-mid); letter-spacing: 0.04em;
@@ -309,6 +312,11 @@
             <label for="est-email">Email</label>
             <input type="email" id="est-email" placeholder="your@email.com" autocomplete="email" inputmode="email" />
           </div>
+          <div class="est-field">
+            <label for="est-promo">Promo Code (optional)</label>
+            <input type="text" id="est-promo" placeholder="Enter code" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase" />
+            <p class="est-promo-note" id="promo-note"></p>
+          </div>
 
           <!-- Honeypot -->
           <div class="est-hp" aria-hidden="true">
@@ -544,6 +552,26 @@
       document.getElementById('step1').style.display = 'block';
     };
 
+    // Promo codes — dollar amounts off the estimate. Keep in sync with what
+    // you honor on the invoice side in KOGNITE.
+    var PROMO_CODES = { 'CAW25': 25 };
+
+    function readPromo() {
+      var raw = (document.getElementById('est-promo').value || '').trim().toUpperCase();
+      if (!raw) return { code: null, discount: 0, invalid: false };
+      var amt = PROMO_CODES[raw];
+      if (amt) return { code: raw, discount: amt, invalid: false };
+      return { code: raw, discount: 0, invalid: true };
+    }
+
+    document.getElementById('est-promo').addEventListener('input', function () {
+      var p = readPromo();
+      var note = document.getElementById('promo-note');
+      if (!p.code) { note.textContent = ''; note.className = 'est-promo-note'; }
+      else if (p.discount) { note.textContent = '✓ ' + p.code + ' applied — $' + p.discount + ' off'; note.className = 'est-promo-note ok'; }
+      else { note.textContent = 'Code not recognized'; note.className = 'est-promo-note bad'; }
+    });
+
     window.revealEstimate = function () {
       var name  = (document.getElementById('est-name').value || '').trim();
       var phone = (document.getElementById('est-phone').value || '').trim();
@@ -560,6 +588,14 @@
       btn.textContent = 'One moment…';
 
       var q = compute();
+
+      // Apply promo discount to the quoted range
+      var promo = readPromo();
+      if (promo.discount > 0) {
+        q.quote_low  = Math.max(0, q.quote_low  - promo.discount);
+        q.quote_mid  = Math.max(0, q.quote_mid  - promo.discount);
+        q.quote_high = Math.max(0, q.quote_high - promo.discount);
+      }
 
       var payload = {
         source: 'website_estimator',
@@ -581,6 +617,8 @@
         quote_high: q.quote_high,
         minimum_applied: q.minimum_applied,
         emergency_fee: q.emergency_fee,
+        promo_code: promo.discount > 0 ? promo.code : null,
+        promo_discount: promo.discount > 0 ? promo.discount : null,
         created_at: new Date().toISOString(),
         website: (document.getElementById('est-website').value || '')
       };
@@ -593,6 +631,7 @@
         var bits = [q.job_type, q.sqft.toLocaleString() + ' sqft', q.condition, q.frequency, q.area];
         if (q.addons.length) bits.push(q.addons.length + ' add-on' + (q.addons.length > 1 ? 's' : ''));
         if (q.minimum_applied) bits.push('includes minimum service charge');
+        if (promo.discount > 0) bits.push('promo ' + promo.code + ' applied — $' + promo.discount + ' off');
         document.getElementById('est-summary').textContent = bits.join(' · ');
 
         document.getElementById('result').style.display = 'block';
