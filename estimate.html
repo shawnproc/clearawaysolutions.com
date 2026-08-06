@@ -331,7 +331,7 @@
 
         <!-- RESULT -->
         <div class="est-card est-result" id="result" style="display:none">
-          <div class="est-result-label">Your Estimated Price Range</div>
+          <div class="est-result-label">Your Estimated Price</div>
           <div class="est-range" id="est-range">$0 <span class="dash">–</span> $0</div>
           <p class="est-result-sub" id="est-summary"></p>
           <div class="est-result-actions">
@@ -487,39 +487,41 @@
       var hours   = sqft / job.prod;
       var sqftEst = sqft * job.sqft;
       var hrEst   = hours * job.hr;
-      // Greater of sqft price or hourly price — per-sqft rate is a true floor
-      var base    = Math.max(sqftEst, hrEst) * cond.m * area.m;
 
-      // One-time cleans START at the minimum — add-ons and fees stack on top
       var MIN_ONETIME = 150;
+      var EMERGENCY_FEE = 150;
       var isOneTime = freqKey === 'onetime' || freqKey === 'emergency';
       var minApplied = false;
-      if (isOneTime && base > 0 && base < MIN_ONETIME) { base = MIN_ONETIME; minApplied = true; }
-
-      var addonSum = 0;
       var addonLabels = [];
-      state.addons.forEach(function (k) {
-        var a = ADDONS[k];
-        addonSum += base * a.pct + a.flat;
-        addonLabels.push(a.label);
-      });
+      state.addons.forEach(function (k) { addonLabels.push(ADDONS[k].label); });
 
-      var subtotal = base + addonSum;
-      var mid  = subtotal * (1 + freq.d);
-
-      // Emergency surcharge — under 2 hr notice; never on recurring
-      var EMERGENCY_FEE = 150;
-      var emergencyFee = 0;
-      if (freqKey === 'emergency' && mid > 0) {
-        emergencyFee = EMERGENCY_FEE;
-        mid += emergencyFee;
+      // Full pipeline run per basis: per-sqft price and hourly price.
+      // The customer pays the greater of the two.
+      function priceFrom(raw) {
+        if (raw <= 0) return 0;
+        var b = raw * cond.m * area.m;
+        if (isOneTime && b < MIN_ONETIME) { b = MIN_ONETIME; minApplied = true; }
+        var add = 0;
+        state.addons.forEach(function (k) {
+          var a = ADDONS[k];
+          add += b * a.pct + a.flat;
+        });
+        var t = (b + add) * (1 + freq.d);
+        if (freqKey === 'emergency' && t > 0) t += EMERGENCY_FEE;
+        if (isOneTime && t > 0 && t < MIN_ONETIME) t = MIN_ONETIME;
+        return Math.round(t / 5) * 5;
       }
 
-      var low  = Math.round((mid * 0.92) / 5) * 5;
-      if (isOneTime && mid > 0 && low < MIN_ONETIME) low = MIN_ONETIME;
-      var high = Math.round((mid * 1.10) / 5) * 5;
+      var sqftPrice = priceFrom(sqftEst);
+      var hrPrice   = priceFrom(hrEst);
+      var mid  = Math.max(sqftPrice, hrPrice);
+      var low  = sqftPrice > 0 && hrPrice > 0 ? Math.min(sqftPrice, hrPrice) : mid;
+      var high = mid;
+      var emergencyFee = freqKey === 'emergency' && mid > 0 ? EMERGENCY_FEE : 0;
 
       return {
+        sqft_price: sqftPrice,
+        hourly_price: hrPrice,
         job_type: job.label,
         sqft: sqft,
         hours: Math.round(hours * 10) / 10,
@@ -596,6 +598,8 @@
         q.quote_low  = Math.max(0, q.quote_low  - promo.discount);
         q.quote_mid  = Math.max(0, q.quote_mid  - promo.discount);
         q.quote_high = Math.max(0, q.quote_high - promo.discount);
+        if (q.sqft_price > 0)   q.sqft_price   = Math.max(0, q.sqft_price   - promo.discount);
+        if (q.hourly_price > 0) q.hourly_price = Math.max(0, q.hourly_price - promo.discount);
       }
 
       var payload = {
@@ -616,6 +620,8 @@
         quote_low: q.quote_low,
         quote_mid: q.quote_mid,
         quote_high: q.quote_high,
+        sqft_price: q.sqft_price || null,
+        hourly_price: q.hourly_price || null,
         minimum_applied: q.minimum_applied,
         emergency_fee: q.emergency_fee,
         promo_code: promo.discount > 0 ? promo.code : null,
@@ -626,8 +632,14 @@
 
       function show() {
         document.getElementById('step2').style.display = 'none';
-        document.getElementById('est-range').innerHTML =
-          '$' + q.quote_low.toLocaleString() + ' <span class="dash">–</span> $' + q.quote_high.toLocaleString();
+        if (q.sqft_price > 0 && q.hourly_price > 0 && q.sqft_price !== q.hourly_price) {
+          document.getElementById('est-range').innerHTML =
+            '<span style="font-size:.55em;opacity:.7">Per Sq Ft</span> $' + q.sqft_price.toLocaleString() +
+            ' <span class="dash">·</span> ' +
+            '<span style="font-size:.55em;opacity:.7">Hourly</span> $' + q.hourly_price.toLocaleString();
+        } else {
+          document.getElementById('est-range').innerHTML = '$' + q.quote_mid.toLocaleString();
+        }
 
         var bits = [q.job_type, q.sqft.toLocaleString() + ' sqft', q.condition, q.frequency, q.area];
         if (q.addons.length) bits.push(q.addons.length + ' add-on' + (q.addons.length > 1 ? 's' : ''));
