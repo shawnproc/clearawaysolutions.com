@@ -635,14 +635,9 @@
 
       function show() {
         document.getElementById('step2').style.display = 'none';
-        if (q.sqft_price > 0 && q.hourly_price > 0 && q.sqft_price !== q.hourly_price) {
-          document.getElementById('est-range').innerHTML =
-            '<span style="font-size:.55em;opacity:.7">Per Sq Ft</span> $' + q.sqft_price.toLocaleString() +
-            ' <span class="dash">·</span> ' +
-            '<span style="font-size:.55em;opacity:.7">Hourly</span> $' + q.hourly_price.toLocaleString();
-        } else {
-          document.getElementById('est-range').innerHTML = '$' + q.quote_mid.toLocaleString();
-        }
+        // Customers see one price — the chargeable (greater) one. Both bases
+        // still go to KOGNITE; the two-price view lives in the internal app.
+        document.getElementById('est-range').innerHTML = '$' + q.quote_mid.toLocaleString();
 
         var bits = [q.job_type, q.sqft.toLocaleString() + ' sqft', q.condition, q.frequency, q.area];
         if (q.addons.length) bits.push(q.addons.length + ' add-on' + (q.addons.length > 1 ? 's' : ''));
