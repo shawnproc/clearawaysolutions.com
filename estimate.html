@@ -497,6 +497,9 @@
 
       // Full pipeline run per basis: per-sqft price and hourly price.
       // The customer pays the greater of the two.
+      // LABOR_PCT covers the actual work itself — included in the price
+      // silently (itemized only on the internal calculator).
+      var LABOR_PCT = 0.20;
       function priceFrom(raw) {
         if (raw <= 0) return 0;
         var b = raw * cond.m * area.m;
@@ -506,7 +509,7 @@
           var a = ADDONS[k];
           add += b * a.pct + a.flat;
         });
-        var t = (b + add) * (1 + freq.d);
+        var t = (b + b * LABOR_PCT + add) * (1 + freq.d);
         if (freqKey === 'emergency' && t > 0) t += EMERGENCY_FEE;
         if (isOneTime && t > 0 && t < MIN_ONETIME) t = MIN_ONETIME;
         return Math.round(t / 5) * 5;
