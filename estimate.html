@@ -45,6 +45,18 @@
     }
     .est-field { margin-bottom: 22px; }
     .est-field:last-child { margin-bottom: 0; }
+    .est-save-hint {
+      margin: 14px auto 0;
+      max-width: 440px;
+      padding: 12px 16px;
+      background: var(--teal-glow);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .est-save-hint strong { color: var(--teal-light); }
     .est-promo-note { font-size: 0.82rem; margin-top: 6px; min-height: 1em; }
     .est-promo-note.ok { color: var(--teal-light); font-weight: 700; }
     .est-promo-note.bad { color: var(--coral); }
@@ -334,6 +346,7 @@
           <div class="est-result-label">Your Estimated Price</div>
           <div class="est-range" id="est-range">$0 <span class="dash">–</span> $0</div>
           <p class="est-result-sub" id="est-summary"></p>
+          <p class="est-save-hint" id="est-save-hint" style="display:none"></p>
           <div class="est-result-actions">
             <a href="book" class="btn-primary">Book This Service</a>
             <a href="tel:+15406930243" class="btn-ghost">Call (540) 693-0243</a>
@@ -500,31 +513,42 @@
       // LABOR_PCT covers the actual work itself — included in the price
       // silently (itemized only on the internal calculator).
       var LABOR_PCT = 0.20;
-      function priceFrom(raw) {
+      // opts: { d: frequency discount, oneTime, emergency, track }
+      // track=true records minApplied for the customer's actual selection.
+      function priceFrom(raw, opts) {
         if (raw <= 0) return 0;
         var b = raw * cond.m * area.m;
-        if (isOneTime && b < MIN_ONETIME) { b = MIN_ONETIME; minApplied = true; }
+        if (opts.oneTime && b < MIN_ONETIME) { b = MIN_ONETIME; if (opts.track) minApplied = true; }
         var add = 0;
         state.addons.forEach(function (k) {
           var a = ADDONS[k];
           add += b * a.pct + a.flat;
         });
-        var t = (b + b * LABOR_PCT + add) * (1 + freq.d);
-        if (freqKey === 'emergency' && t > 0) t += EMERGENCY_FEE;
-        if (isOneTime && t > 0 && t < MIN_ONETIME) t = MIN_ONETIME;
+        var t = (b + b * LABOR_PCT + add) * (1 + opts.d);
+        if (opts.emergency && t > 0) t += EMERGENCY_FEE;
+        if (opts.oneTime && t > 0 && t < MIN_ONETIME) t = MIN_ONETIME;
         return Math.round(t / 5) * 5;
       }
 
-      var sqftPrice = priceFrom(sqftEst);
-      var hrPrice   = priceFrom(hrEst);
+      var chosen = { d: freq.d, oneTime: isOneTime, emergency: freqKey === 'emergency', track: true };
+      var sqftPrice = priceFrom(sqftEst, chosen);
+      var hrPrice   = priceFrom(hrEst, chosen);
       var mid  = Math.max(sqftPrice, hrPrice);
       var low  = sqftPrice > 0 && hrPrice > 0 ? Math.min(sqftPrice, hrPrice) : mid;
       var high = mid;
       var emergencyFee = freqKey === 'emergency' && mid > 0 ? EMERGENCY_FEE : 0;
 
+      // Same job priced as a weekly recurring visit — no minimum, no
+      // emergency fee, weekly discount. Shown as a savings hint on
+      // one-time quotes.
+      var weeklyOpts = { d: FREQ.weekly.d, oneTime: false, emergency: false, track: false };
+      var weeklyPrice = Math.max(priceFrom(sqftEst, weeklyOpts), priceFrom(hrEst, weeklyOpts));
+
       return {
         sqft_price: sqftPrice,
         hourly_price: hrPrice,
+        weekly_price: weeklyPrice,
+        is_one_time: isOneTime,
         job_type: job.label,
         sqft: sqft,
         hours: Math.round(hours * 10) / 10,
@@ -638,6 +662,18 @@
         // Customers see one price — the chargeable (greater) one. Both bases
         // still go to KOGNITE; the two-price view lives in the internal app.
         document.getElementById('est-range').innerHTML = '$' + q.quote_mid.toLocaleString();
+
+        // Recurring savings hint — only on one-time quotes, always calculated
+        var hint = document.getElementById('est-save-hint');
+        if (q.is_one_time && q.weekly_price > 0 && q.weekly_price < q.quote_mid) {
+          var saved = q.quote_mid - q.weekly_price;
+          hint.innerHTML = '💡 On a <strong>weekly schedule</strong> this same clean would be about <strong>$' +
+            q.weekly_price.toLocaleString() + '/visit</strong> — save $' + saved.toLocaleString() +
+            ' every time, minimum fee waived.';
+          hint.style.display = 'block';
+        } else {
+          hint.style.display = 'none';
+        }
 
         var bits = [q.job_type, q.sqft.toLocaleString() + ' sqft', q.condition, q.frequency, q.area];
         if (q.addons.length) bits.push(q.addons.length + ' add-on' + (q.addons.length > 1 ? 's' : ''));
