@@ -351,7 +351,7 @@
             <a href="book" class="btn-primary">Book This Service</a>
             <a href="tel:+15406930243" class="btn-ghost">Call (540) 693-0243</a>
           </div>
-          <p class="est-sent-note">Final pricing is confirmed after a quick walkthrough or call. If you're ready, head over to <a href="book" style="color: var(--teal-light); font-weight:700;">Book Now</a> and choose a time. <span style="opacity:.35">r7</span></p>
+          <p class="est-sent-note">Final pricing is confirmed after a quick walkthrough or call. If you're ready, head over to <a href="book" style="color: var(--teal-light); font-weight:700;">Book Now</a> and choose a time. <span style="opacity:.35">r8</span></p>
         </div>
 
       </div>
@@ -497,9 +497,15 @@
       var freq = FREQ[freqKey];
       var area = AREAS[areaKey];
 
+      // Price = hours at $45 + 10% labor + square footage at its own rate.
+      // Hours are estimated from square footage at the job type's speed.
+      var LABOR_PCT = 0.10;
+      var SQFT_RATE = 0.03;
       var hours   = sqft / job.prod;
-      var sqftEst = sqft * job.sqft;
       var hrEst   = hours * job.hr;
+      var laborEst = hrEst * LABOR_PCT;
+      var sqftEst = sqft * SQFT_RATE;
+      var rawTotal = hrEst + laborEst + sqftEst;
 
       var MIN_ONETIME = 150;
       var EMERGENCY_FEE = 150;
@@ -508,12 +514,7 @@
       var addonLabels = [];
       state.addons.forEach(function (k) { addonLabels.push(ADDONS[k].label); });
 
-      // Full pipeline run per basis: per-sqft price and hourly price.
-      // The customer pays the greater of the two.
-      // LABOR_PCT covers the actual work itself — included in the price
-      // silently (itemized only on the internal calculator).
-      var LABOR_PCT = 0.10;
-      // opts: { d: frequency discount, oneTime, emergency, track }
+      // opts: { d: frequency discount (off the total), oneTime, emergency, track }
       // track=true records minApplied for the customer's actual selection.
       function priceFrom(raw, opts) {
         if (raw <= 0) return 0;
@@ -524,25 +525,25 @@
           var a = ADDONS[k];
           add += b * a.pct + a.flat;
         });
-        var t = (b + b * LABOR_PCT + add) * (1 + opts.d);
+        var t = (b + add) * (1 + opts.d);
         if (opts.emergency && t > 0) t += EMERGENCY_FEE;
         if (opts.oneTime && t > 0 && t < MIN_ONETIME) t = MIN_ONETIME;
-        return Math.round(t / 5) * 5;
+        return Math.round(t);
       }
 
       var chosen = { d: freq.d, oneTime: isOneTime, emergency: freqKey === 'emergency', track: true };
-      var sqftPrice = priceFrom(sqftEst, chosen);
-      var hrPrice   = priceFrom(hrEst, chosen);
-      var mid  = Math.max(sqftPrice, hrPrice);
-      var low  = sqftPrice > 0 && hrPrice > 0 ? Math.min(sqftPrice, hrPrice) : mid;
+      var mid  = priceFrom(rawTotal, chosen);
+      var low  = mid;
       var high = mid;
+      var sqftPrice = Math.round(sqftEst);
+      var hrPrice   = Math.round(hrEst + laborEst);
       var emergencyFee = freqKey === 'emergency' && mid > 0 ? EMERGENCY_FEE : 0;
 
       // Same job priced as a weekly recurring visit — no minimum, no
       // emergency fee, weekly discount. Shown as a savings hint on
       // one-time quotes.
       var weeklyOpts = { d: FREQ.weekly.d, oneTime: false, emergency: false, track: false };
-      var weeklyPrice = Math.max(priceFrom(sqftEst, weeklyOpts), priceFrom(hrEst, weeklyOpts));
+      var weeklyPrice = priceFrom(rawTotal, weeklyOpts);
 
       return {
         sqft_price: sqftPrice,
